@@ -46,6 +46,9 @@ import tornado.concurrent
 import tornado.tcpclient
 import tornado.netutil
 
+# Rafay imports
+#import ssl
+
 # pylint: disable=import-error,no-name-in-module
 if six.PY2:
     import urlparse
@@ -706,6 +709,14 @@ class TCPReqServerChannel(salt.transport.mixins.auth.AESReqServerMixin, salt.tra
             # intercept the "_auth" commands, since the main daemon shouldn't know
             # anything about our key auth
             if payload['enc'] == 'clear' and payload.get('load', {}).get('cmd') == '_auth':
+                '''
+                try:
+                    client_cert_pem = ssl.DER_cert_to_PEM_cert(stream.socket.getpeercert(binary_form=True))
+                    log.debug('Client %s connected with cert', id_)
+                    log.debug('%s', str(client_cert_pem))
+                except Exception as e:
+                    log.debug('Exception in extracting-peer cert : %s', e)
+                '''
                 yield stream.write(salt.transport.frame.frame_msg(
                     self._auth(payload['load']), header=header))
                 raise tornado.gen.Return()

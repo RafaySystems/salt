@@ -210,10 +210,10 @@ def update_stats(stats, start_time, data):
     # the jid is used as the create time
     try:
         jid = data['jid']
-    except KeyError:
+    except Exception:
         try:
             jid = data['data']['__pub_jid']
-        except KeyError:
+        except Exception:
             log.info('jid not found in data, stats not updated')
             return stats
     create_time = int(time.mktime(time.strptime(jid, '%Y%m%d%H%M%S%f')))
